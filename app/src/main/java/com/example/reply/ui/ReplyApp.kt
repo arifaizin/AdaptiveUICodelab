@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Chat
@@ -169,11 +170,18 @@ fun ReplyAppContent(
                     modifier = Modifier.weight(1f),
                 )
             } else {
-                ReplyListOnlyContent(
-                    replyHomeUIState = replyHomeUIState,
-                    onEmailCardPressed = onEmailCardPressed,
-                    modifier = Modifier.weight(1f)
-                )
+                if (replyHomeUIState.isShowingHomepage) {
+                    ReplyListOnlyContent(
+                        replyHomeUIState = replyHomeUIState,
+                        onEmailCardPressed = onEmailCardPressed,
+                        modifier = Modifier.weight(1f)
+                    )
+                } else {
+                    ReplyDetailContent(
+                        replyHomeUIState = replyHomeUIState,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
             AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
                 ReplyBottomNavigationBar()
