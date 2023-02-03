@@ -116,7 +116,7 @@ object LocalEmailsDataProvider {
             """.trimIndent(),
             createAt = "20 mins ago",
             isStarred = true,
-            threads = threads,
+            threads = threads.shuffled(),
         ),
         Email(
             1L,
@@ -133,7 +133,7 @@ object LocalEmailsDataProvider {
                 Ali
             """.trimIndent(),
             createAt = "40 mins ago",
-            threads = threads,
+            threads = threads.shuffled(),
         ),
         Email(
             2L,
@@ -149,7 +149,7 @@ object LocalEmailsDataProvider {
             ),
             true,
             createAt = "1 hour ago",
-            threads = threads,
+            threads = threads.shuffled(),
         ),
         Email(
             3L,
@@ -164,8 +164,9 @@ object LocalEmailsDataProvider {
                 Anyway, it turns out she is on the organizing committee for the high school reunion this fall. I don't know if you were planning on going or not, but she could definitely use our help in trying to track down lots of missing alums. If you can make it, we're doing a little phone-tree party at her place next Saturday, hoping that if we can find one person, thee more will...
             """.trimIndent(),
             createAt = "2 hours ago",
-            mailbox = MailboxType.SENT
-        ),
+            mailbox = MailboxType.SENT,
+            threads = threads.shuffled(),
+            ),
         Email(
             4L,
             LocalAccountsDataProvider.getContactAccountByUid(11L),
@@ -183,8 +184,9 @@ object LocalEmailsDataProvider {
                 Maybe we can jump on the phone later today if you have a second.
             """.trimIndent(),
             createAt = "2 hours ago",
-            isStarred = true
-        ),
+            isStarred = true,
+            threads = threads.shuffled(),
+            ),
         Email(
             5L,
             LocalAccountsDataProvider.getContactAccountByUid(13L),
@@ -192,7 +194,8 @@ object LocalEmailsDataProvider {
             "Update to Your Itinerary",
             "",
             createAt = "2 hours ago",
-        ),
+            threads = threads.shuffled(),
+            ),
         Email(
             6L,
             LocalAccountsDataProvider.getContactAccountByUid(10L),
@@ -201,8 +204,9 @@ object LocalEmailsDataProvider {
             "Raspberry Pie: We should make this pie recipe tonight! The filling is " +
                     "very quick to put together.",
             createAt = "2 hours ago",
-            mailbox = MailboxType.SENT
-        ),
+            mailbox = MailboxType.SENT,
+            threads = threads.shuffled(),
+            ),
         Email(
             7L,
             LocalAccountsDataProvider.getContactAccountByUid(9L),
@@ -210,7 +214,8 @@ object LocalEmailsDataProvider {
             "Delivered",
             "Your shoes should be waiting for you at home!",
             createAt = "2 hours ago",
-        ),
+            threads = threads.shuffled(),
+            ),
         Email(
             8L,
             LocalAccountsDataProvider.getContactAccountByUid(13L),
@@ -223,7 +228,8 @@ object LocalEmailsDataProvider {
           """.trimIndent(),
             mailbox = MailboxType.TRASH,
             createAt = "3 hours ago",
-        ),
+            threads = threads.shuffled(),
+            ),
         Email(
             9L,
             LocalAccountsDataProvider.getContactAccountByUid(10L),
@@ -235,8 +241,9 @@ object LocalEmailsDataProvider {
             Wanted to email and see what you thought of
           """.trimIndent(),
             createAt = "3 hours ago",
-            mailbox = MailboxType.DRAFTS
-        ),
+            mailbox = MailboxType.DRAFTS,
+            threads = threads.shuffled(),
+            ),
         Email(
             10L,
             LocalAccountsDataProvider.getContactAccountByUid(5L),
@@ -248,8 +255,9 @@ object LocalEmailsDataProvider {
             Whether you're an experienced hiker or just looking to get outside for the afternoon, there's a segment that suits you.
           """.trimIndent(),
             createAt = "3 hours ago",
-            mailbox = MailboxType.TRASH
-        ),
+            mailbox = MailboxType.TRASH,
+            threads = threads.shuffled(),
+            ),
         Email(
             11L,
             LocalAccountsDataProvider.getContactAccountByUid(5L),
@@ -259,8 +267,9 @@ object LocalEmailsDataProvider {
             You've been selected as a winner in our latest raffle! To claim your prize, click on the link.
           """.trimIndent(),
             createAt = "3 hours ago",
-            mailbox = MailboxType.SPAM
-        )
+            mailbox = MailboxType.SPAM,
+            threads = threads.shuffled(),
+            )
     )
 
     /**

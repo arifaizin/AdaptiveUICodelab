@@ -56,7 +56,7 @@ fun ReplyApp(
     replyHomeUIState: ReplyHomeUIState, widthSizeClass: WindowWidthSizeClass,
     onEmailCardPressed: (Email) -> Unit = { },
     onDetailScreenBackPressed: () -> Unit = { },
-    ) {
+) {
     val navigationType: ReplyNavigationType = when (widthSizeClass) {
         WindowWidthSizeClass.Compact -> {
             ReplyNavigationType.BOTTOM_NAVIGATION
@@ -76,8 +76,12 @@ fun ReplyApp(
     } else {
         ReplyContentType.LIST_ONLY
     }
-    ReplyNavigationWrapperUI(replyHomeUIState, navigationType, contentType)
-    ReplyNavigationWrapperUI(replyHomeUIState, navigationType, onEmailCardPressed = onEmailCardPressed)
+    ReplyNavigationWrapperUI(
+        replyHomeUIState,
+        navigationType,
+        contentType,
+        onEmailCardPressed = onEmailCardPressed
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,6 +89,7 @@ fun ReplyApp(
 private fun ReplyNavigationWrapperUI(
     replyHomeUIState: ReplyHomeUIState,
     navigationType: ReplyNavigationType,
+    contentType: ReplyContentType,
     onEmailCardPressed: (Email) -> Unit,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -102,6 +107,7 @@ private fun ReplyNavigationWrapperUI(
             ReplyAppContent(
                 replyHomeUIState,
                 navigationType,
+                contentType,
                 onEmailCardPressed = onEmailCardPressed
             )
         }
@@ -138,6 +144,7 @@ private fun ReplyNavigationWrapperUI(
 fun ReplyAppContent(
     replyHomeUIState: ReplyHomeUIState,
     navigationType: ReplyNavigationType,
+    contentType: ReplyContentType,
     onEmailCardPressed: (Email) -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
@@ -158,10 +165,15 @@ fun ReplyAppContent(
             if (contentType == ReplyContentType.LIST_AND_DETAIL) {
                 ReplyListAndDetailContent(
                     replyHomeUIState = replyHomeUIState,
+                    onEmailCardPressed = onEmailCardPressed,
                     modifier = Modifier.weight(1f),
                 )
             } else {
-                ReplyListOnlyContent(replyHomeUIState = replyHomeUIState, modifier = Modifier.weight(1f))
+                ReplyListOnlyContent(
+                    replyHomeUIState = replyHomeUIState,
+                    onEmailCardPressed = onEmailCardPressed,
+                    modifier = Modifier.weight(1f)
+                )
             }
             AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
                 ReplyBottomNavigationBar()

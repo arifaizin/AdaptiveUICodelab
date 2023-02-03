@@ -70,17 +70,18 @@ fun ReplyListOnlyContent(
 @Composable
 fun ReplyListAndDetailContent(
     replyHomeUIState: ReplyHomeUIState,
+    onEmailCardPressed: (Email) -> Unit,
     modifier: Modifier = Modifier,
     selectedItemIndex: Int = 0
 ) {
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         LazyColumn(modifier = modifier.weight(1f)) {
             items(replyHomeUIState.emails) { email ->
-                ReplyEmailListItem(email = email, )
+                ReplyEmailListItem(email = email, onEmailCardPressed = onEmailCardPressed)
             }
         }
         LazyColumn(modifier = modifier.weight(1f)) {
-            items(replyHomeUIState.emails[selectedItemIndex].threads) { email ->
+            items(replyHomeUIState.currentSelectedEmail.threads) { email ->
                 ReplyEmailThreadItem(email = email)
             }
         }
