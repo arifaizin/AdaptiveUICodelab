@@ -53,18 +53,19 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ReplyApp(replyHomeUIState: ReplyHomeUIState, windowSize: WindowWidthSizeClass) {
-    val navigationType = when (windowSize) {
+    val navigationType: ReplyNavigationType
+    when (windowSize) {
         WindowWidthSizeClass.Compact -> {
-            ReplyNavigationType.BOTTOM_NAVIGATION
+            navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
         }
         WindowWidthSizeClass.Medium -> {
-            ReplyNavigationType.NAVIGATION_RAIL
+            navigationType = ReplyNavigationType.NAVIGATION_RAIL
         }
         WindowWidthSizeClass.Expanded -> {
-            ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
+            navigationType = ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
         }
         else -> {
-            ReplyNavigationType.BOTTOM_NAVIGATION
+            navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
         }
     }
     ReplyNavigationWrapperUI(replyHomeUIState, navigationType)
