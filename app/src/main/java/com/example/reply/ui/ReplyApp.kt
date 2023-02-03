@@ -46,26 +46,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
-import com.example.reply.data.local.LocalEmailsDataProvider
-import com.example.reply.ui.theme.ReplyTheme
 import com.example.reply.ui.utils.ReplyNavigationType
 import kotlinx.coroutines.launch
 
 @Composable
-fun ReplyApp(replyHomeUIState: ReplyHomeUIState, windowSize: WindowWidthSizeClass) {
-    val navigationType: ReplyNavigationType
-    when (windowSize) {
+fun ReplyApp(replyHomeUIState: ReplyHomeUIState, widthSizeClass: WindowWidthSizeClass) {
+    val navigationType: ReplyNavigationType = when (widthSizeClass) {
         WindowWidthSizeClass.Compact -> {
-            navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
+            ReplyNavigationType.BOTTOM_NAVIGATION
         }
         WindowWidthSizeClass.Medium -> {
-            navigationType = ReplyNavigationType.NAVIGATION_RAIL
+            ReplyNavigationType.NAVIGATION_RAIL
         }
         WindowWidthSizeClass.Expanded -> {
-            navigationType = ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
+            ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
         }
         else -> {
-            navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
+            ReplyNavigationType.BOTTOM_NAVIGATION
         }
     }
     ReplyNavigationWrapperUI(replyHomeUIState, navigationType)
