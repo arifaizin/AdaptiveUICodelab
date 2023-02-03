@@ -54,7 +54,7 @@ fun ReplyAppPreview() {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(
                 emails = LocalEmailsDataProvider.allEmails
-            ), windowSize = WindowWidthSizeClass.Compact
+            ), widthSizeClass = WindowWidthSizeClass.Compact
         )
     }
 }
@@ -66,7 +66,7 @@ fun ReplyAppPreviewTablet() {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(
                 emails = LocalEmailsDataProvider.allEmails
-            ), windowSize = WindowWidthSizeClass.Medium
+            ), widthSizeClass = WindowWidthSizeClass.Medium
         )
     }
 }
@@ -78,7 +78,7 @@ fun ReplyAppPreviewDesktop() {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(
                 emails = LocalEmailsDataProvider.allEmails
-            ), windowSize = WindowWidthSizeClass.Expanded
+            ), widthSizeClass = WindowWidthSizeClass.Expanded
         )
     }
 }

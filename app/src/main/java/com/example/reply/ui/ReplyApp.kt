@@ -46,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
+import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
 import kotlinx.coroutines.launch
 
@@ -65,14 +66,20 @@ fun ReplyApp(replyHomeUIState: ReplyHomeUIState, widthSizeClass: WindowWidthSize
             ReplyNavigationType.BOTTOM_NAVIGATION
         }
     }
-    ReplyNavigationWrapperUI(replyHomeUIState, navigationType)
+    val contentType: ReplyContentType = if (widthSizeClass == WindowWidthSizeClass.Expanded) {
+        ReplyContentType.LIST_AND_DETAIL
+    } else {
+        ReplyContentType.LIST_ONLY
+    }
+    ReplyNavigationWrapperUI(replyHomeUIState, navigationType, contentType)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ReplyNavigationWrapperUI(
     replyHomeUIState: ReplyHomeUIState,
-    navigationType: ReplyNavigationType
+    navigationType: ReplyNavigationType,
+    contentType: ReplyContentType
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -86,7 +93,7 @@ private fun ReplyNavigationWrapperUI(
                 }
             }
         ) {
-            ReplyAppContent(replyHomeUIState, navigationType)
+            ReplyAppContent(replyHomeUIState, navigationType, contentType)
         }
     } else {
         ModalNavigationDrawer(
@@ -105,7 +112,7 @@ private fun ReplyNavigationWrapperUI(
             drawerState = drawerState
         ) {
             ReplyAppContent(
-                replyHomeUIState, navigationType,
+                replyHomeUIState, navigationType, contentType,
                 onDrawerClicked = {
                     scope.launch {
                         drawerState.open()
@@ -134,10 +141,14 @@ fun ReplyAppContent(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.inverseOnSurface)
         ) {
-            ReplyListOnlyContent(
-                replyHomeUIState = replyHomeUIState,
-                modifier = Modifier.weight(1f)
-            )
+            if (contentType == ReplyContentType.LIST_AND_DETAIL) {
+                ReplyListAndDetailContent(
+                    replyHomeUIState = replyHomeUIState,
+                    modifier = Modifier.weight(1f),
+                )
+            } else {
+                ReplyListOnlyContent(replyHomeUIState = replyHomeUIState, modifier = Modifier.weight(1f))
+            }
             AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
                 ReplyBottomNavigationBar()
             }
