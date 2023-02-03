@@ -20,6 +20,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,13 +32,15 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: ReplyHomeViewModel by viewModels()
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             ReplyTheme {
+                val windowSize = calculateWindowSizeClass(this)
                 val uiState = viewModel.uiState.collectAsState().value
-                ReplyApp(uiState)
+                ReplyApp(uiState, windowSize.widthSizeClass)
             }
         }
     }
@@ -46,9 +50,11 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ReplyAppPreview() {
     ReplyTheme {
-        ReplyApp(replyHomeUIState = ReplyHomeUIState(
-            emails = LocalEmailsDataProvider.allEmails
-        ))
+        ReplyApp(
+            replyHomeUIState = ReplyHomeUIState(
+                emails = LocalEmailsDataProvider.allEmails
+            ), windowSize = WindowWidthSizeClass.Compact
+        )
     }
 }
 
@@ -56,9 +62,11 @@ fun ReplyAppPreview() {
 @Composable
 fun ReplyAppPreviewTablet() {
     ReplyTheme {
-        ReplyApp(replyHomeUIState = ReplyHomeUIState(
-            emails = LocalEmailsDataProvider.allEmails
-        ))
+        ReplyApp(
+            replyHomeUIState = ReplyHomeUIState(
+                emails = LocalEmailsDataProvider.allEmails
+            ), windowSize = WindowWidthSizeClass.Medium
+        )
     }
 }
 
@@ -66,8 +74,10 @@ fun ReplyAppPreviewTablet() {
 @Composable
 fun ReplyAppPreviewDesktop() {
     ReplyTheme {
-        ReplyApp(replyHomeUIState = ReplyHomeUIState(
-            emails = LocalEmailsDataProvider.allEmails
-        ))
+        ReplyApp(
+            replyHomeUIState = ReplyHomeUIState(
+                emails = LocalEmailsDataProvider.allEmails
+            ), windowSize = WindowWidthSizeClass.Expanded
+        )
     }
 }

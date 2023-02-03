@@ -16,6 +16,7 @@
 
 package com.example.reply.ui
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,19 +35,8 @@ import androidx.compose.material.icons.filled.MenuOpen
 import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Videocam
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationDrawerItemDefaults
-import androidx.compose.material3.NavigationRail
-import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.*
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -56,40 +46,99 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
+import com.example.reply.data.local.LocalEmailsDataProvider
+import com.example.reply.ui.theme.ReplyTheme
+import com.example.reply.ui.utils.ReplyNavigationType
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReplyApp(replyHomeUIState: ReplyHomeUIState) {
-    // You will add navigation info here
-    ReplyNavigationWrapperUI(replyHomeUIState)
+fun ReplyApp(replyHomeUIState: ReplyHomeUIState, windowSize: WindowWidthSizeClass) {
+    val navigationType = when (windowSize) {
+        WindowWidthSizeClass.Compact -> {
+            ReplyNavigationType.BOTTOM_NAVIGATION
+        }
+        WindowWidthSizeClass.Medium -> {
+            ReplyNavigationType.NAVIGATION_RAIL
+        }
+        WindowWidthSizeClass.Expanded -> {
+            ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
+        }
+        else -> {
+            ReplyNavigationType.BOTTOM_NAVIGATION
+        }
+    }
+    ReplyNavigationWrapperUI(replyHomeUIState, navigationType)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ReplyNavigationWrapperUI(
-    replyHomeUIState: ReplyHomeUIState
+    replyHomeUIState: ReplyHomeUIState,
+    navigationType: ReplyNavigationType
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val selectedDestination = ReplyDestinations.INBOX
 
-    ReplyAppContent(replyHomeUIState)
+    if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
+        PermanentNavigationDrawer(
+            drawerContent = {
+                    NavigationDrawerContent(selectedDestination)
+            }
+        ) {
+            ReplyAppContent(replyHomeUIState, navigationType)
+        }
+    } else {
+        ModalNavigationDrawer(
+            drawerContent = {
+                    NavigationDrawerContent(
+                        selectedDestination,
+                        onDrawerClicked = {
+                            scope.launch {
+                                drawerState.close()
+                            }
+                        }
+                    )
+            },
+            drawerState = drawerState
+        ) {
+            ReplyAppContent(
+                replyHomeUIState, navigationType,
+                onDrawerClicked = {
+                    scope.launch {
+                        drawerState.open()
+                    }
+                }
+            )
+        }
+    }
 }
-
 
 @Composable
 fun ReplyAppContent(
     replyHomeUIState: ReplyHomeUIState,
+    navigationType: ReplyNavigationType,
     onDrawerClicked: () -> Unit = {}
 ) {
     Row(modifier = Modifier
         .fillMaxSize()) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.inverseOnSurface)
+        AnimatedVisibility(visible = navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
+            ReplyNavigationRail(
+                onDrawerClicked = onDrawerClicked
+            )
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.inverseOnSurface)
         ) {
-            ReplyListOnlyContent(replyHomeUIState = replyHomeUIState, modifier = Modifier.weight(1f))
-            ReplyBottomNavigationBar()
+            ReplyListOnlyContent(
+                replyHomeUIState = replyHomeUIState,
+                modifier = Modifier.weight(1f)
+            )
+            AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
+                ReplyBottomNavigationBar()
+            }
         }
     }
 }
