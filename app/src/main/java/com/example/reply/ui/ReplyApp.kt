@@ -83,7 +83,9 @@ private fun ReplyNavigationWrapperUI(
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
         PermanentNavigationDrawer(
             drawerContent = {
+                PermanentDrawerSheet {
                     NavigationDrawerContent(selectedDestination)
+                }
             }
         ) {
             ReplyAppContent(replyHomeUIState, navigationType)
@@ -91,6 +93,7 @@ private fun ReplyNavigationWrapperUI(
     } else {
         ModalNavigationDrawer(
             drawerContent = {
+                ModalDrawerSheet {
                     NavigationDrawerContent(
                         selectedDestination,
                         onDrawerClicked = {
@@ -99,6 +102,7 @@ private fun ReplyNavigationWrapperUI(
                             }
                         }
                     )
+                }
             },
             drawerState = drawerState
         ) {
