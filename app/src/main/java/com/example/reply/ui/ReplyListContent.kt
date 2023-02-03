@@ -18,6 +18,7 @@ package com.example.reply.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -53,6 +54,7 @@ import com.example.reply.data.Email
 @Composable
 fun ReplyListOnlyContent(
     replyHomeUIState: ReplyHomeUIState,
+    onEmailCardPressed: (Email) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier) {
@@ -60,7 +62,7 @@ fun ReplyListOnlyContent(
             ReplySearchBar(modifier = Modifier.fillMaxWidth())
         }
         items(replyHomeUIState.emails) { email ->
-            ReplyEmailListItem(email = email)
+            ReplyEmailListItem(email = email, onEmailCardPressed = onEmailCardPressed)
         }
     }
 }
@@ -74,7 +76,7 @@ fun ReplyListAndDetailContent(
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         LazyColumn(modifier = modifier.weight(1f)) {
             items(replyHomeUIState.emails) { email ->
-                ReplyEmailListItem(email = email)
+                ReplyEmailListItem(email = email, )
             }
         }
         LazyColumn(modifier = modifier.weight(1f)) {
@@ -85,12 +87,12 @@ fun ReplyListAndDetailContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplyEmailListItem(
     email: Email,
+    onEmailCardPressed: (Email) -> Unit?,
     modifier: Modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-    Card(modifier = modifier,) {
+    Card(modifier = modifier.clickable{ onEmailCardPressed(email) }) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()

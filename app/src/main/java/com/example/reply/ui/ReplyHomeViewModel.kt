@@ -21,9 +21,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.reply.data.Email
 import com.example.reply.data.EmailsRepository
 import com.example.reply.data.EmailsRepositoryImpl
+import com.example.reply.data.MailboxType
+import com.example.reply.data.local.LocalEmailsDataProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = EmailsRepositoryImpl()): ViewModel() {
@@ -47,10 +50,30 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
                 }
         }
     }
+
+    fun updateDetailsScreenStates(email: Email) {
+        _uiState.update {
+            it.copy(
+                currentSelectedEmail = email,
+                isShowingHomepage = false
+            )
+        }
+    }
+
+    fun resetHomeScreenStates() {
+        _uiState.update {
+            it.copy(
+                currentSelectedEmail = it.currentSelectedEmail,
+                isShowingHomepage = true
+            )
+        }
+    }
 }
 
 data class ReplyHomeUIState(
     val emails : List<Email> = emptyList(),
     val loading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val currentSelectedEmail: Email = LocalEmailsDataProvider.allEmails[0],
+    val isShowingHomepage: Boolean = true
 )
