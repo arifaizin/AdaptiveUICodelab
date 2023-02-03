@@ -41,9 +41,14 @@ class MainActivity : ComponentActivity() {
             ReplyTheme {
                 val windowSize = calculateWindowSizeClass(this)
                 val uiState = viewModel.uiState.collectAsState().value
-                ReplyApp(uiState, windowSize.widthSizeClass, onEmailCardPressed = {
-                    viewModel.updateDetailsScreenStates(it)
-                })
+                ReplyApp(uiState, windowSize.widthSizeClass,
+                    onEmailCardPressed = {
+                        viewModel.updateDetailsScreenStates(it)
+                    },
+                    onDetailScreenBackPressed = {
+                        viewModel.resetHomeScreenStates()
+                    }
+                )
             }
         }
     }

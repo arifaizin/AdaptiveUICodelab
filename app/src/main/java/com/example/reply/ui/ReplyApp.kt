@@ -16,6 +16,7 @@
 
 package com.example.reply.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -81,7 +82,8 @@ fun ReplyApp(
         replyHomeUIState,
         navigationType,
         contentType,
-        onEmailCardPressed = onEmailCardPressed
+        onEmailCardPressed = onEmailCardPressed,
+        onDetailScreenBackPressed = onDetailScreenBackPressed
     )
 }
 
@@ -92,7 +94,8 @@ private fun ReplyNavigationWrapperUI(
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
     onEmailCardPressed: (Email) -> Unit,
-) {
+    onDetailScreenBackPressed: () -> Unit,
+    ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val selectedDestination = ReplyDestinations.INBOX
@@ -109,7 +112,8 @@ private fun ReplyNavigationWrapperUI(
                 replyHomeUIState,
                 navigationType,
                 contentType,
-                onEmailCardPressed = onEmailCardPressed
+                onEmailCardPressed = onEmailCardPressed,
+                onDetailScreenBackPressed = onDetailScreenBackPressed
             )
         }
     } else {
@@ -135,7 +139,8 @@ private fun ReplyNavigationWrapperUI(
                         drawerState.open()
                     }
                 },
-                onEmailCardPressed = onEmailCardPressed
+                onEmailCardPressed = onEmailCardPressed,
+                onDetailScreenBackPressed = onDetailScreenBackPressed
             )
         }
     }
@@ -147,6 +152,7 @@ fun ReplyAppContent(
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
     onEmailCardPressed: (Email) -> Unit,
+    onDetailScreenBackPressed: () -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
     Row(
@@ -181,6 +187,9 @@ fun ReplyAppContent(
                         replyHomeUIState = replyHomeUIState,
                         modifier = Modifier.weight(1f)
                     )
+                    BackHandler {
+                        onDetailScreenBackPressed()
+                    }
                 }
             }
             AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
