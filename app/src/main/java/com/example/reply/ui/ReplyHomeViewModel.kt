@@ -63,7 +63,7 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
     fun resetHomeScreenStates() {
         _uiState.update {
             it.copy(
-                currentSelectedEmail = it.currentSelectedEmail,
+                currentSelectedEmail =  LocalEmailsDataProvider.allEmails[0],
                 isShowingHomepage = true
             )
         }
