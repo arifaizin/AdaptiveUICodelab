@@ -50,12 +50,15 @@ import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.data.Email
+import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.ReplyNavigationType
 import kotlinx.coroutines.launch
 
 @Composable
 fun ReplyApp(
-    replyHomeUIState: ReplyHomeUIState, widthSizeClass: WindowWidthSizeClass,
+    replyHomeUIState: ReplyHomeUIState,
+    widthSizeClass: WindowWidthSizeClass,
+    devicePosture: DevicePosture,
     onEmailCardPressed: (Email) -> Unit = { },
     onDetailScreenBackPressed: () -> Unit = { },
 ) {
@@ -67,7 +70,11 @@ fun ReplyApp(
             ReplyNavigationType.NAVIGATION_RAIL
         }
         WindowWidthSizeClass.Expanded -> {
-            ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
+            if (devicePosture is DevicePosture.BookPosture) {
+                ReplyNavigationType.NAVIGATION_RAIL
+            } else {
+                ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
+            }
         }
         else -> {
             ReplyNavigationType.BOTTOM_NAVIGATION
@@ -75,6 +82,13 @@ fun ReplyApp(
     }
     val contentType: ReplyContentType = if (widthSizeClass == WindowWidthSizeClass.Expanded) {
         ReplyContentType.LIST_AND_DETAIL
+    } else if (widthSizeClass == WindowWidthSizeClass.Medium) {
+        if (devicePosture is DevicePosture.BookPosture
+            || devicePosture is DevicePosture.Separating) {
+            ReplyContentType.LIST_AND_DETAIL
+        } else {
+            ReplyContentType.LIST_ONLY
+        }
     } else {
         ReplyContentType.LIST_ONLY
     }
@@ -95,7 +109,7 @@ private fun ReplyNavigationWrapperUI(
     contentType: ReplyContentType,
     onEmailCardPressed: (Email) -> Unit,
     onDetailScreenBackPressed: () -> Unit,
-    ) {
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val selectedDestination = ReplyDestinations.INBOX

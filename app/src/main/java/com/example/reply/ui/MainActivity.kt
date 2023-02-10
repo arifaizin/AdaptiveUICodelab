@@ -26,8 +26,18 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.window.layout.FoldingFeature
+import androidx.window.layout.WindowInfoTracker
 import com.example.reply.data.local.LocalEmailsDataProvider
 import com.example.reply.ui.theme.ReplyTheme
+import com.example.reply.ui.utils.DevicePosture
+import com.example.reply.ui.utils.isBookPosture
+import com.example.reply.ui.utils.isSeparating
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 class MainActivity : ComponentActivity() {
 
@@ -37,11 +47,36 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val devicePostureFlow = WindowInfoTracker.getOrCreate(this).windowLayoutInfo(this)
+            .flowWithLifecycle(this.lifecycle)
+            .map { layoutInfo ->
+                val foldingFeature =
+                    layoutInfo.displayFeatures
+                        .filterIsInstance<FoldingFeature>()
+                        .firstOrNull()
+                when {
+                    isBookPosture(foldingFeature) ->
+                        DevicePosture.BookPosture(foldingFeature.bounds)
+
+                    isSeparating(foldingFeature) ->
+                        DevicePosture.Separating(foldingFeature.bounds, foldingFeature.orientation)
+
+                    else -> DevicePosture.NormalPosture
+                }
+            }
+            .stateIn(
+                scope = lifecycleScope,
+                started = SharingStarted.Eagerly,
+                initialValue = DevicePosture.NormalPosture
+            )
+
+
         setContent {
             ReplyTheme {
                 val windowSize = calculateWindowSizeClass(this)
                 val uiState = viewModel.uiState.collectAsState().value
-                ReplyApp(uiState, windowSize.widthSizeClass,
+                val devicePosture = devicePostureFlow.collectAsState().value
+                ReplyApp(uiState, windowSize.widthSizeClass, devicePosture,
                     onEmailCardPressed = {
                         viewModel.updateDetailsScreenStates(it)
                     },
@@ -61,7 +96,9 @@ fun ReplyAppPreview() {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(
                 emails = LocalEmailsDataProvider.allEmails
-            ), widthSizeClass = WindowWidthSizeClass.Compact
+            ),
+            widthSizeClass = WindowWidthSizeClass.Compact,
+            devicePosture = DevicePosture.NormalPosture,
         )
     }
 }
@@ -73,7 +110,9 @@ fun ReplyAppPreviewTablet() {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(
                 emails = LocalEmailsDataProvider.allEmails
-            ), widthSizeClass = WindowWidthSizeClass.Medium
+            ),
+            widthSizeClass = WindowWidthSizeClass.Medium,
+            devicePosture = DevicePosture.NormalPosture,
         )
     }
 }
@@ -85,7 +124,9 @@ fun ReplyAppPreviewDesktop() {
         ReplyApp(
             replyHomeUIState = ReplyHomeUIState(
                 emails = LocalEmailsDataProvider.allEmails
-            ), widthSizeClass = WindowWidthSizeClass.Expanded
-        )
+            ),
+            widthSizeClass = WindowWidthSizeClass.Expanded,
+            devicePosture = DevicePosture.NormalPosture,
+            )
     }
 }
